@@ -1,7 +1,10 @@
 import { describe, expect, test } from 'vitest'
 
-import { generateUpdateColumnPayload, getPlaceholderText } from './ColumnEditor.utils'
-import type { ColumnField } from '../SidePanelEditor.types'
+import {
+  generateUpdateColumnPayload,
+  getPlaceholderText,
+} from '../../../components/interfaces/TableGridEditor/SidePanelEditor/ColumnEditor/ColumnEditor.utils'
+import type { ColumnField } from '../../../components/interfaces/TableGridEditor/SidePanelEditor/SidePanelEditor.types'
 
 const baseTable = {
   name: 'posts',

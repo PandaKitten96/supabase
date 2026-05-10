@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-import { convertArgumentTypes } from './Functions.utils'
+import { convertArgumentTypes } from '../../../../components/interfaces/Database/Functions/Functions.utils'
 
 describe('convertArgumentTypes', () => {
   test('returns empty value array for undefined input', () => {
