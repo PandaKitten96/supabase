@@ -5,12 +5,16 @@ import {
   getPlaceholderText,
 } from '../../../components/interfaces/TableGridEditor/SidePanelEditor/ColumnEditor/ColumnEditor.utils'
 import type { ColumnField } from '../../../components/interfaces/TableGridEditor/SidePanelEditor/SidePanelEditor.types'
+import type {
+  RetrievedTableColumn,
+  RetrieveTableResult,
+} from '../../../data/tables/table-retrieve-query'
 
 const baseTable = {
   name: 'posts',
   schema: 'public',
   primary_keys: [{ name: 'id' }],
-} as any
+} as unknown as RetrieveTableResult
 
 const originalColumn = {
   name: 'title',
@@ -22,7 +26,7 @@ const originalColumn = {
   is_identity: false,
   is_nullable: true,
   is_unique: false,
-} as any
+} as unknown as RetrievedTableColumn
 
 const baseField: ColumnField = {
   id: '1',

@@ -4,7 +4,7 @@ import { convertArgumentTypes } from '../../../../components/interfaces/Database
 
 describe('convertArgumentTypes', () => {
   test('returns empty value array for undefined input', () => {
-    expect(convertArgumentTypes(undefined as any)).toStrictEqual({ value: [] })
+    expect(convertArgumentTypes(undefined as unknown as string)).toStrictEqual({ value: [] })
   })
 
   test('parses a single simple argument', () => {
