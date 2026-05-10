@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest'
 
 import {
   createPayloadForCreatePolicy,
+  createPayloadForUpdatePolicy,
   createSQLPolicy,
   generateProgrammaticPoliciesForTable,
 } from '@/components/interfaces/Auth/Policies/Policies.utils'
@@ -323,5 +324,65 @@ describe('generateProgrammaticPoliciesForTable', () => {
     expect(policies).toHaveLength(4)
     // Indirect path uses EXISTS subquery
     expect(policies[0].sql).toContain('exists')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// createPayloadForUpdatePolicy
+// ---------------------------------------------------------------------------
+
+describe('createPayloadForUpdatePolicy', () => {
+  const original = {
+    id: 7,
+    name: 'allow_select',
+    schema: 'public',
+    table: 'posts',
+    table_id: 42,
+    command: 'SELECT',
+    definition: 'auth.uid() = user_id',
+    check: null,
+    roles: ['authenticated'],
+    action: 'PERMISSIVE' as const,
+  } as any
+
+  test('returns only id when nothing changed', () => {
+    const payload = createPayloadForUpdatePolicy(baseForm, original)
+    expect(payload).toStrictEqual({ id: 7 })
+  })
+
+  test('includes name when it changes', () => {
+    const payload = createPayloadForUpdatePolicy({ ...baseForm, name: 'new_name' }, original)
+    expect(payload.name).toBe('new_name')
+  })
+
+  test('includes normalised definition when it changes', () => {
+    const payload = createPayloadForUpdatePolicy(
+      { ...baseForm, definition: '  auth.uid()  =  owner_id  ' },
+      original
+    )
+    expect(payload.definition).toBe('auth.uid() = owner_id')
+  })
+
+  test('clears definition to undefined when set to empty string', () => {
+    const payload = createPayloadForUpdatePolicy({ ...baseForm, definition: '' }, original)
+    expect(payload.definition).toBeUndefined()
+  })
+
+  test('includes check when it changes', () => {
+    const payload = createPayloadForUpdatePolicy(
+      { ...baseForm, check: 'auth.uid() = user_id' },
+      original
+    )
+    expect(payload.check).toBe('auth.uid() = user_id')
+  })
+
+  test('includes roles when changed to a non-empty array', () => {
+    const payload = createPayloadForUpdatePolicy({ ...baseForm, roles: ['anon'] }, original)
+    expect(payload.roles).toStrictEqual(['anon'])
+  })
+
+  test('defaults roles to ["public"] when changed to empty array', () => {
+    const payload = createPayloadForUpdatePolicy({ ...baseForm, roles: [] }, original)
+    expect(payload.roles).toStrictEqual(['public'])
   })
 })

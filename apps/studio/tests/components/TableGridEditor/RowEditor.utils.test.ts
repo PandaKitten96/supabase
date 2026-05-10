@@ -175,6 +175,19 @@ describe('validateFields', () => {
     // Array validation fires first, so the error is still captured
     expect(errors['tags']).toBeTruthy()
   })
+
+  test('returns no error for an array field with null value', () => {
+    // if (isArray && field.value) guard is false when value is null
+    const field = makeField({ name: 'tags', format: '_text', value: null })
+    expect(validateFields([field as any])).toStrictEqual({})
+  })
+
+  test('array validation still captures error when defaultValue is set', () => {
+    // The defaultValue guard (at end of forEach body) does not skip earlier array validation
+    const field = makeField({ name: 'tags', format: '_text', value: 'not-json', defaultValue: '[]' })
+    const errors = validateFields([field as any])
+    expect(errors['tags']).toBeTruthy()
+  })
 })
 
 // ---------------------------------------------------------------------------
@@ -262,6 +275,21 @@ describe('generateRowObjectFromFields', () => {
     const fields = [makeField({ name: 'created_at', format: 'timestamp', value: '2024-01-01T12:30:00' })] as any
     const result = generateRowObjectFromFields({ fields }) as any
     expect(typeof result.created_at).toBe('string')
+  })
+
+  test('sets array field to null when value is null', () => {
+    // isArray && value !== null is false, falls to else branch
+    const fields = [makeField({ name: 'tags', format: '_text', value: null })] as any
+    const result = generateRowObjectFromFields({ fields }) as any
+    expect(result.tags).toBeNull()
+  })
+
+  test('passes a JSON field value through when it is already an object', () => {
+    // typeof field.value === 'object' branch
+    const obj = { key: 'val' }
+    const fields = [makeField({ name: 'meta', format: 'jsonb', value: obj })] as any
+    const result = generateRowObjectFromFields({ fields }) as any
+    expect(result.meta).toBe(obj)
   })
 })
 
