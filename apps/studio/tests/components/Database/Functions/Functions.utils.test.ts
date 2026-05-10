@@ -19,6 +19,10 @@ describe('convertArgumentTypes', () => {
     expect(convertArgumentTypes(null as any)).toStrictEqual({ value: [] })
   })
 
+  test('returns empty value array for undefined input', () => {
+    expect(convertArgumentTypes(undefined as any)).toStrictEqual({ value: [] })
+  })
+
   test('parses a single simple argument', () => {
     expect(convertArgumentTypes('a integer')).toStrictEqual({
       value: [{ name: 'a', type: 'integer', defaultValue: undefined }],
