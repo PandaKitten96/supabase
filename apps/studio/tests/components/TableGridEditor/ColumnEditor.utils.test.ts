@@ -226,6 +226,12 @@ describe('getPlaceholderText', () => {
     expect(result).toContain('+00')
   })
 
+  test('returns uuid placeholder for uuid type', () => {
+    const result = getPlaceholderText('uuid', 'id')
+    expect(result).toContain('"id"')
+    expect(result).toContain('00000000-0000-0000-0000-000000000000')
+  })
+
   test('returns generic length check for unknown format', () => {
     expect(getPlaceholderText('custom_type', 'c')).toContain('length("c")')
   })
@@ -418,5 +424,42 @@ describe('generateUpdateColumnPayload', () => {
     )
     // type unchanged: "_int4" normalizes to "int4[]", field type is "int4[]" -> no diff
     expect(payload.type).toBeUndefined()
+  })
+
+  test('includes comment in payload when it changes', () => {
+    const payload = generateUpdateColumnPayload(
+      originalColumn,
+      baseTable,
+      { ...baseField, comment: 'new comment' }
+    )
+    expect(payload.comment).toBe('new comment')
+  })
+
+  test('includes check in payload when it changes', () => {
+    const payload = generateUpdateColumnPayload(
+      originalColumn,
+      baseTable,
+      { ...baseField, check: 'length(title) > 0' }
+    )
+    expect(payload.check).toBe('length(title) > 0')
+  })
+
+  test('includes defaultValue in payload when it changes', () => {
+    const payload = generateUpdateColumnPayload(
+      originalColumn,
+      baseTable,
+      { ...baseField, defaultValue: 'untitled' }
+    )
+    expect(payload.defaultValue).toBe('untitled')
+    expect(payload.defaultValueFormat).toBe('literal')
+  })
+
+  test('includes isPrimaryKey in payload when it changes', () => {
+    const payload = generateUpdateColumnPayload(
+      originalColumn,
+      baseTable,
+      { ...baseField, isPrimaryKey: true }
+    )
+    expect(payload.isPrimaryKey).toBe(true)
   })
 })
