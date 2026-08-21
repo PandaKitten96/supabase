@@ -293,7 +293,7 @@ export const getPlaceholderText = (format?: string, columnFieldName?: string) =>
       return `"${columnName}" at time zone 'UTC' between '09:00:00+00' and '17:00:00+00'`
 
     case 'uuid':
-      return `"${columnName}" '00000000-0000-0000-0000-000000000000'`
+      return `"${columnName}" = '00000000-0000-0000-0000-000000000000'`
 
     case 'timestamp':
       return `"${columnName}" > '2023-01-01 00:00' and "${columnName}" < '2025-01-01 00:00'`
