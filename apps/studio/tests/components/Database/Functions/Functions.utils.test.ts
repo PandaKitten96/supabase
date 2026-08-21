@@ -16,7 +16,7 @@ describe('convertArgumentTypes', () => {
   })
 
   test('returns empty value array for null/undefined-like empty input', () => {
-    expect(convertArgumentTypes(null as any)).toStrictEqual({ value: [] })
+    expect(convertArgumentTypes(null as unknown as string)).toStrictEqual({ value: [] })
   })
 
   test('parses a single simple argument', () => {
