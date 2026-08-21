@@ -226,6 +226,12 @@ describe('getPlaceholderText', () => {
     expect(result).toContain('+00')
   })
 
+  test('returns valid uuid equality expression for uuid', () => {
+    expect(getPlaceholderText('uuid', 'id')).toBe(
+      `"id" = '00000000-0000-0000-0000-000000000000'`
+    )
+  })
+
   test('returns generic length check for unknown format', () => {
     expect(getPlaceholderText('custom_type', 'c')).toContain('length("c")')
   })
